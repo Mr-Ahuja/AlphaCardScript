@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Qr Generator</title>
+    <style>
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+{% include 'qrgenerator/navbar.html' %}
+<a href="/media/{{ main_file }}" download>
+    <button class="btn btn-outline-success mt-2 mr-2 float-left" title="Download File"
+            type="button">
+        Download File
+    </button>
+</a>
+
+
+
+{% if is_job_done == 'completed' %}
+<a href="/media/{{ full_report }}" download>
+    <button class="btn btn-outline-success mt-2 mr-2 float-left" title="Download File"
+            type="button">
+        Full Report
+    </button>
+</a>
+<a href="/media/{{ success_report }}" download>
+    <button class="btn btn-outline-success mt-2 mr-2 float-left" title="Download File"
+            type="button">
+        Success Cards
+    </button>
+</a>
+<a href="/media/{{ failure_report }}" download>
+    <button class="btn btn-outline-success mt-2 mr-2 float-left" title="Download File"
+            type="button">
+        Failure Cards
+    </button>
+</a>
+<a href="/media/{{ not_attempted_report }}" download>
+    <button class="btn btn-outline-success mt-2 mr-2 float-left" title="Download File"
+            type="button">
+        Not Attempted Cards
+    </button>
+</a>
+{% endif %}
+
+{% if is_job_done == 'not run' %}
+    <form method="post">
+        {% csrf_token %}
+        
+        <input class="form-control mb-2" rows="5" id="windows" name="windows" value="Number of Windows"></input>
+        <input class="form-control mb-2" rows="5" id="url" name="url" value="Website URL"></input>
+        <label>Type : </label>
+        <input type="radio" id="report_status_negative" name="type" value="nsdl" checked>
+        <label for="report_status_negative">NSDL</label>
+        <input type="radio" id="report_status_positive" name="type" value="zaggle">
+        <label for="report_status_positive">Zaggle</label><br> 
+        <button class="btn btn-outline-success mt-2 mr-2 float-right" title="Download File"
+        type="submit">
+            Run Job
+        </button>
+    </form>
+{% endif %}
+{% if is_job_done == 'completed' or  is_job_done == 'running' %}
+<br>
+<br>
+<div>
+    <h4>Success : {{ success }} </h4>
+    <h4>Failure : {{ failed }}</h4>
+    <h4>Not Attempted : {{ not_attempted }}</h4>
+</div>
+{% endif %}
+<div class="container mt-5">
+    <div class="form-group">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Amount</th>
+                <th>Card Number</th>
+                <th>CVV</th>
+                <th>Month</th>
+                <th>Year</th>
+                <th>IPin</th>
+            </tr>
+            {% for r in results %}
+            <tr>
+                <td> {{ r.Name1 }}</td>
+                <td> {{ r.Email }}</td>
+                <td> {{ r.Mobile1 }}</td>
+                <td> {{ r.Amount }}</td>
+                <td> {{ r.Card_No }}</td>
+                <td> {{ r.CVV }}</td>
+                <td> {{ r.Month }}</td>
+                <td> {{ r.Year }}</td>
+                <td> {{ r.ipin }}</td>   
+            </tr> 
+            {% endfor %}    
+        </table>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
