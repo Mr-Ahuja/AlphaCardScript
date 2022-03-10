@@ -15,12 +15,18 @@
 {% include 'qrgenerator/navbar.html' %}
 
 {% block content %}
-  <h2>Upload</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="document">
-    <button type="submit">Upload file</button>
-  </form>
+<div class="outline-success">
+  <center>
+    <h3>Create Job</h3>
+    <br>
+    <br>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input class="form-control" type="file" id="formFile" name="document">
+      <button class="btn btn-outline-success mt-2 ml-2" type="submit">Upload file</button>
+    </form>
+  </center>
+</div>
 {% endblock %}
 </body>
 </html>

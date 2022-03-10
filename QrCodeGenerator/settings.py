@@ -25,7 +25,7 @@ SECRET_KEY = '9y1w+u+5y!1+4+y9@qszju%0tx#@vpn^12!kskm77$g9a52d^5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Gift Card Script</title>
+    <style>
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'qrgenerator/navbar.html' %}
+
+    <div class="form-group row mt-5 ml-2">
+        <div class="col-auto ml-2">
+            <h3>Create Penny Job</h3>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-auto ml-2">
+                    <input class="form-control" type="file" id="formFile" name="document">
+                </div>
+                <div class="col-auto ml-2">
+                    <button class="form-control-lg btn btn-outline-success mt-2 ml-2" type="submit">Upload file</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container mt-5">
+        <div class="form-group">
+            <table>
+                <tr>
+                    <th>Job ID</th>
+                    <th>File Name</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Download</th>
+                    <th>Status</th>
+                </tr>
+                {% for r in results %}
+                <tr>
+                    <td><a href="/penny/{{ r.job }}"> {{ r.job }}</a></td>
+                    <td> {{ r.name }}</td>
+                    <td> {{ r.date }}</td>
+                    <td> {{ r.time }}</td>
+                    <td>
+                        <a href="/media/penny/{{ r.download }}" download="file.xlsx">
+                            <button class="btn btn-outline-success mt-2 mr-2 float-right" title="Download File"
+                                type="button">
+                                Download File
+                            </button>
+                        </a>
+                    </td>
+                    <td> {{ r.status }} </td>
+                    <td>
+                        <form action="/penny/{{r.job}}/delete" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-outline-success mt-2 mr-2 float-right" title="Download File"
+                                type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
