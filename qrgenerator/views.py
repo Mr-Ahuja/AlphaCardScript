@@ -83,6 +83,53 @@ def automate(data, driver, type_of_card, failed_execution=False):
         driver.find_element_by_xpath(
             '//button[contains(text(),"Pay Now")]').click()
 
+    if "rajkarm" in input_url:
+        driver.get(input_url)
+        wait_till_visible('//input[@id="id_amount"]', driver)
+        driver.find_element_by_xpath(
+            '//input[@id="id_amount"]').send_keys(str(data["Amount"]))
+        driver.find_element_by_xpath(
+            '//input[@id="wpf_input_56_customer_email"]').send_keys(str(data["Email"]))
+        driver.find_element_by_xpath(
+            '//input[@id="wpf_input_56_number"]').send_keys(str(data["Mobile1"]))
+        driver.find_element_by_xpath(
+            '//input[@id="wpf_input_56_customer_name"]').send_keys(str(data["Name1"]))
+        driver.find_element_by_xpath(
+            '//input[@id="wpf_input_56_text"]').send_keys("123")
+
+        driver.find_element_by_xpath(
+            '//input[@id="wpf_input_56_text"]').send_keys("wpf_input_56_text_1")
+
+        driver.find_element_by_xpath(
+            '//button[contains(text(),"Pay")]').click()
+        wait_till_visible('//span[text()="Credit Card"]', driver)
+
+        driver.find_element_by_xpath('//span[text()="Credit Card"]').click()
+        input = driver.find_element_by_id("cc-number")
+        card = str(int(data["Card_No"]))
+        input.send_keys(card)
+
+        month = str(data["Month"])
+
+        if len(month) == 1:
+            month = "0" + month
+
+        driver.find_element_by_id('CardDate1').send_keys(month)
+        driver.find_element_by_id('CardDate1').send_keys(
+            str(int(data["Year"]))[2:])
+        cvv = str(int(data["CVV"]))
+        if len(str(cvv)) < 3:
+            cvv = "0"*(3-len(cvv))+cvv
+        else:
+            cvv = cvv
+        driver.find_element_by_id('CVVFormatter1').send_keys(cvv)
+        driver.find_element_by_id(
+            'cc-name').send_keys(str(data["Name1"]))
+        driver.find_element_by_xpath(
+            '//button[contains(text(),"Pay Now")]').click()
+
+
+
     if "razorpay" in input_url:
         driver.get(input_url)
         wait_till_visible(
