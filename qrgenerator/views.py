@@ -83,11 +83,13 @@ def automate(data, driver, type_of_card, failed_execution=False):
         driver.find_element_by_xpath(
             '//button[contains(text(),"Pay Now")]').click()
 
-    if "rajkarm" in input_url:
+    elif "rajkarm" in input_url:
         driver.get(input_url)
-        wait_till_visible('//input[@id="id_amount"]', driver)
+        wait_till_visible('//input[@id="wpf_input_56_custom_payment_input"]', driver)
         driver.find_element_by_xpath(
-            '//input[@id="id_amount"]').send_keys(str(data["Amount"]))
+            '//input[@id="wpf_input_56_custom_payment_input"]').clear()
+        driver.find_element_by_xpath(
+            '//input[@id="wpf_input_56_custom_payment_input"]').send_keys(str(data["Amount"]))
         driver.find_element_by_xpath(
             '//input[@id="wpf_input_56_customer_email"]').send_keys(str(data["Email"]))
         driver.find_element_by_xpath(
@@ -98,14 +100,13 @@ def automate(data, driver, type_of_card, failed_execution=False):
             '//input[@id="wpf_input_56_text"]').send_keys("123")
 
         driver.find_element_by_xpath(
-            '//input[@id="wpf_input_56_text"]').send_keys("wpf_input_56_text_1")
+            '//input[@id="wpf_input_56_text_1"]').send_keys("123")
 
-        driver.find_element_by_xpath(
-            '//button[contains(text(),"Pay")]').click()
-        wait_till_visible('//span[text()="Credit Card"]', driver)
+        driver.find_element_by_id(
+            'stripe_form_submit_56').click()
+        wait_till_visible('//*[@id="cardNumber"]', driver,10)
 
-        driver.find_element_by_xpath('//span[text()="Credit Card"]').click()
-        input = driver.find_element_by_id("cc-number")
+        input = driver.find_element_by_id("cardNumber")
         card = str(int(data["Card_No"]))
         input.send_keys(card)
 
@@ -114,23 +115,24 @@ def automate(data, driver, type_of_card, failed_execution=False):
         if len(month) == 1:
             month = "0" + month
 
-        driver.find_element_by_id('CardDate1').send_keys(month)
-        driver.find_element_by_id('CardDate1').send_keys(
+        driver.find_element_by_id('cardExpiry').send_keys(month)
+        driver.find_element_by_id('cardExpiry').send_keys(
             str(int(data["Year"]))[2:])
         cvv = str(int(data["CVV"]))
         if len(str(cvv)) < 3:
             cvv = "0"*(3-len(cvv))+cvv
         else:
             cvv = cvv
-        driver.find_element_by_id('CVVFormatter1').send_keys(cvv)
+        driver.find_element_by_id('cardCvc').send_keys(cvv)
         driver.find_element_by_id(
-            'cc-name').send_keys(str(data["Name1"]))
+            'billingName').send_keys(str(data["Name1"]))
         driver.find_element_by_xpath(
-            '//button[contains(text(),"Pay Now")]').click()
+            '//button').click()
+        
+        type_of_card = "rajkarm"
 
 
-
-    if "razorpay" in input_url:
+    elif "razorpay" in input_url:
         driver.get(input_url)
         wait_till_visible(
             '//*[@id="form-section"]/form/div[1]/div[1]/div/div[2]/div[1]/input', driver)
@@ -195,14 +197,16 @@ def automate(data, driver, type_of_card, failed_execution=False):
 
         driver.find_element_by_id("ipin").send_keys(str(data["ipin"]))
         driver.find_element_by_id("otpbut").click()
+        wait_till_visible('//*[text()="Order ID"]', driver)
 
-    if type_of_card == "nsdl":
+    elif type_of_card == "nsdl":
         wait_till_visible('//*[@id="txtipin"]', driver)
 
         driver.find_element_by_id("txtipin").send_keys(str(data["ipin"]))
         driver.find_element_by_id("btnverify").click()
+        wait_till_visible('//*[text()="Order ID"]', driver)
 
-    if type_of_card == "zoduko":
+    elif type_of_card == "zoduko":
         wait_till_visible('//*[@id="expDate"]', driver)
 
         driver.find_element_by_id("expDate").send_keys(month)
@@ -212,7 +216,23 @@ def automate(data, driver, type_of_card, failed_execution=False):
         driver.find_element_by_id("pin").send_keys(str(data["ipin"]))
         driver.find_element_by_id("submitButtonIdForPin").click()
 
-    wait_till_visible('//*[text()="Order ID"]', driver)
+        wait_till_visible('//*[text()="Order ID"]', driver)
+
+    elif type_of_card == "rajkarm" :
+        time.sleep(10)
+        driver.switch_to.frame(driver.find_element_by_xpath("//iframe"))
+        driver.switch_to.frame(driver.find_element_by_xpath("//iframe"))
+        driver.switch_to.frame(driver.find_element_by_xpath("//iframe"))
+        
+        wait_till_visible('//*[@id="IPIN"]', driver,10)
+
+        driver.find_element_by_id("IPIN").send_keys(str(data["ipin"]))
+        driver.find_element_by_id("IDCT_BUTID").click()
+        driver.switch_to.default_content()
+        time.sleep(10)
+        
+        wait_till_visible('//a[text()="RAJKARM PAYMENTS(EMI & PREMIUM)"]', driver)
+
 
     if "razorpay" in input_url:
         driver.switch_to.window(driver.window_handles[0])
@@ -223,13 +243,23 @@ def automate(data, driver, type_of_card, failed_execution=False):
         else:
             raise Exception()
 
-    if "cashfree" in input_url:
+    elif "cashfree" in input_url:
         if check_exists_by_xpath('//div[text()="Payment successful"]', driver):
             data["Status"] = "SUCCESS"
             status_current['success'] += 1
 
         else:
             raise Exception()
+    
+    elif "rajkarm" in input_url:
+        
+        if check_exists_by_xpath('//div[text()="Payment has been successfully completed"]', driver):
+            data["Status"] = "SUCCESS"
+            status_current['success'] += 1
+
+        else:
+            raise Exception()
+
 
 
 def wait_till_visible(xpath, driver, max_wait=5):
@@ -269,7 +299,7 @@ def main_file(batch_range, name, job_id, file_name, type_of_card, failed_executi
     global completed_thread, status_current
 
     options = Options()
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
     # options.add_argument('--disable-gpu')
 
     driver = webdriver.Chrome(
